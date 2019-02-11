@@ -6,10 +6,10 @@ CHANNEL_NUM = 1
 CONV2_DEEP = 32
 CONV1_DEEP = 16
 FC1_SIZE = 512
-NUM_CLASSES = 34
 
 
-def inference(input_tensor, train, regularizer):
+
+def inference(input_tensor, train, regularizer,NUM_CLASSES):
     with tf.variable_scope('layer1-conv1'):
         conv1_weights = tf.get_variable('weight', [CONV1_SIZE, CONV1_SIZE, CHANNEL_NUM, CONV1_DEEP],
                                         initializer=tf.truncated_normal_initializer(stddev=0.1))
