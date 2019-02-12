@@ -3,35 +3,26 @@ import time
 import inference
 import tensorflow as tf
 import pic_reader
+import config
 
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 
-SIZE = 1280
-WIDTH = 32
-HEIGHT = 40
-NUM_CLASSES = 34
-iterations = 1000
-batch_size = 60
-LEARNING_RATE_BASE = 0.001
-LEARNING_RATE_DECAY = 0.99
-REGULARIZATION_RATE = 0.001
-MOVING_AVERAGE_DECAY = 0.99
+SIZE = config.SIZE
+WIDTH = config.WIDTH
+HEIGHT = config.HEIGHT
+NUM_CLASSES = config.DIGITS_NUM_CLASSES
+iterations = config.iterations
+batch_size = config.batch_size
+LEARNING_RATE_BASE = config.LEARNING_RATE_BASE
+LEARNING_RATE_DECAY = config.LEARNING_RATE_DECAY
+REGULARIZATION_RATE = config.REGULARIZATION_RATE
+MOVING_AVERAGE_DECAY = config.MOVING_AVERAGE_DECAY
 
-SAVER_DIR = "train-saver/digits/"
-
-LETTERS_DIGITS = (
-    "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F", "G", "H", "J", "K", "L", "M", "N",
-    "P",
-    "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z")
-license_num = ""
-
+SAVER_DIR = config.DIGITS_SAVER_DIR
 time_begin = time.time()
-
 # 定义输入节点，对应于图片像素值矩阵集合和图片标签(即所代表的数字)
 x = tf.placeholder(tf.float32, shape=[None, HEIGHT, WIDTH, 1])
 y_ = tf.placeholder(tf.float32, shape=[None, NUM_CLASSES])
-
-x_image = tf.reshape(x, [-1, WIDTH, HEIGHT, 1])
 
 input_dir = './tf_car_license_dataset/train_images/training-set/'
 input_sum, input_images, input_labels = pic_reader.cul_file_sum(input_dir, NUM_CLASSES)
@@ -44,7 +35,7 @@ valid_images, valid_labels = pic_reader.gener_img_lbls(valid_dir, valid_images, 
 time_elapsed = time.time() - time_begin
 print("读取图片文件耗费时间：%d秒" % time_elapsed)
 
-logits = inference.inference(x_image, True, None, NUM_CLASSES)
+logits = inference.inference(x, True, None, NUM_CLASSES)
 cross_entropy = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits_v2(labels=y_, logits=logits))
 global_step = tf.Variable(0, trainable=False)
 

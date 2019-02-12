@@ -3,24 +3,21 @@ import time
 import inference
 import tensorflow as tf
 import pic_reader
-
+import config
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 
-SIZE = 1280
-WIDTH = 32
-HEIGHT = 40
-NUM_CLASSES = 6
-iterations = 1000
-batch_size = 60
-LEARNING_RATE_BASE = 0.0001
-LEARNING_RATE_DECAY = 0.99
-REGULARIZATION_RATE = 0.0001
-MOVING_AVERAGE_DECAY = 0.99
+SIZE = config.SIZE
+WIDTH = config.WIDTH
+HEIGHT = config.HEIGHT
+NUM_CLASSES = config.PROVINCE_NUM_CLASSES
+iterations = config.iterations
+batch_size = config.batch_size
+LEARNING_RATE_BASE = config.LEARNING_RATE_BASE
+LEARNING_RATE_DECAY = config.LEARNING_RATE_DECAY
+REGULARIZATION_RATE = config.REGULARIZATION_RATE
+MOVING_AVERAGE_DECAY = config.MOVING_AVERAGE_DECAY
 
-SAVER_DIR = "train-saver/province/"
-
-license_num = ""
-
+SAVER_DIR = config.PROVINCE_SAVER_DIR
 time_begin = time.time()
 
 # 定义输入节点，对应于图片像素值矩阵集合和图片标签(即所代表的数字)
@@ -78,7 +75,7 @@ with tf.Session() as sess:
         if it % 5 == 0:
             iterate_accuracy = accuracy.eval(feed_dict={x: valid_images, y_: valid_labels})
             print('第 %d 次训练迭代: 准确率 %0.5f%%' % (it, iterate_accuracy * 100))
-            if iterate_accuracy >= 0.9999 and it >= iterations:
+            if iterate_accuracy >= 0.9999 or it >= iterations:
                 break;
 
     print('完成训练!')

@@ -1,11 +1,11 @@
 import tensorflow as tf
-
-CONV1_SIZE = 8
-CONV2_SIZE = 5
-CHANNEL_NUM = 1
-CONV2_DEEP = 32
-CONV1_DEEP = 16
-FC1_SIZE = 512
+import config
+CONV1_SIZE = config.CONV1_SIZE
+CONV2_SIZE = config.CONV2_SIZE
+CHANNEL_NUM = config.CHANNEL_NUM
+CONV2_DEEP = config.CONV2_DEEP
+CONV1_DEEP = config.CONV1_DEEP
+FC1_SIZE = config.FC1_SIZE
 
 
 

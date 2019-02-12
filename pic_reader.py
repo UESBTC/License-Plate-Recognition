@@ -1,10 +1,11 @@
 import os
 import numpy as np
+import config
 from PIL import Image
 
-SIZE = 1280
-WIDTH = 32
-HEIGHT = 40
+#SIZE = config.SIZE
+WIDTH = config.WIDTH
+HEIGHT = config.HEIGHT
 
 
 def cul_file_sum(path, NUM_CLASSES):
