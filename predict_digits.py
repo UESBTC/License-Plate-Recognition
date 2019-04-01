@@ -1,8 +1,8 @@
 import tensorflow as tf
 import os
 import config
-from PIL import Image
 import numpy as np
+import cv2
 
 NUM_CLASSES=config.DIGITS_NUM_CLASSES
 SAVER_DIR=config.DIGITS_SAVER_DIR
@@ -49,43 +49,21 @@ with tf.Session() as sess:
 
     result=tf.nn.softmax(tf.matmul(fc1, fc2_w) + fc2_b)
 
-    img_data = np.zeros((5,HEIGHT,WIDTH))
-    path = "tf_car_license_dataset/test_images/7.bmp" 
-    img = Image.open(path)
-    width = img.size[0]
-    height = img.size[1]
-    for h in range(0, height):
-        for w in range(0, width):
-            if img.getpixel((w, h)) < 190:
-                img_data[0][h][w] = 1
-            else:
-                img_data[0][h][w] = 0
+    img=cv2.imread('tf_car_license_dataset/test_images/7.bmp',0)
+    print(img.shape)
+    _,img_b=cv2.threshold(img,190,255,cv2.THRESH_BINARY_INV)
 
-    img_data=np.reshape(img_data,[5,HEIGHT,WIDTH,CHANNEL_NUM])
+    img_data=np.reshape(img_b,[1,HEIGHT,WIDTH,CHANNEL_NUM])
     result = sess.run(result, feed_dict={x: np.array(img_data)})
 
-    max1 = 0
-    max2 = 0
-    max3 = 0
-    max1_index = 0
-    max2_index = 0
-    max3_index = 0
+    max = 0
 
     for j in range(NUM_CLASSES):
-        if result[0][j] > max1:
-            max1 = result[0][j]
-            max1_index = j
-            continue
-        if (result[0][j] > max2) and (result[0][j] <= max1):
-            max2 = result[0][j]
-            max2_index = j
-            continue
-        if (result[0][j] > max3) and (result[0][j] <= max2):
-            max3 = result[0][j]
-            max3_index = j
+        if result[0][j] > max:
+            max = result[0][j]
+            max_index = j
             continue
 
-    license_num = license_num + LETTERS_DIGITS[max1_index]
-    print("概率：  [%s %0.2f%%]    [%s %0.2f%%]    [%s %0.2f%%]" % (
-        LETTERS_DIGITS[max1_index], max1 * 100, LETTERS_DIGITS[max2_index], max2 * 100,
-        LETTERS_DIGITS[max3_index], max3 * 100))
+    license_num = LETTERS_DIGITS[max_index]
+    print("概率：  [%s %0.2f%%]" % (
+        LETTERS_DIGITS[max_index], max * 100))
